@@ -1,0 +1,11 @@
+Number,Android Key,Quantity,English,Description
+1,main_fragment_title,,Cool Fragment,
+2,main_fragment_button,,Cool Button,
+3,secondary_fragment_title,,Less Cool Fragment,
+4,secondary_fragmetn,,Less Cool Button,
+5,plural,zero, No apples,
+6,plural,one,%d apple,
+7,plural,other,%d apples,
+8,pluralstring2,zero,%d devices connected,
+9,pluralstring2,one,%d device connected,
+10,pluralstring2,other,%d devices connected,

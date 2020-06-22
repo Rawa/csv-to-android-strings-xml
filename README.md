@@ -1,1 +1,1 @@
-# csv-to-android-strings
+# CSV to Android Strings.xml
