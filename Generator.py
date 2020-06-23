@@ -5,6 +5,7 @@ import csv
 import logging
 from itertools import islice
 from lxml import etree
+import re
 
 from generator.domain.PluralType import PluralType
 from generator.domain.StringElement import StringElement
@@ -18,14 +19,16 @@ class Parser:
     @staticmethod
     def parser():
         parser = argparse.ArgumentParser(
-            description='Convert csv to Android localization files')
+            description='Convert csv to Android strings.xml')
 
-        parser.add_argument('-i', '--input', action="store", dest="input_file",
+        required = parser.add_argument_group('required arguments')
+        required.add_argument('-i', '--input', action="store", dest="input_file",
                             type=argparse.FileType('r', encoding='UTF-8'), help='CSV input file', required=True)
+
         parser.add_argument('-o', '--output', action="store", dest="output_file",
                             type=argparse.FileType('w+', encoding='UTF-8'), help='CSV input file')
         parser.add_argument('-k', '--key-column', action="store", dest="key_column",
-                            type=int, help='Column for keys', default=0)
+                            type=int, help='Column for keys', required=True)
         parser.add_argument('-v', '--value-column', action="store", dest="value_column",
                             type=int, help='Column for values', required=True)
         parser.add_argument('-p', '--plural-column', action="store", dest="plural_column",
@@ -69,6 +72,7 @@ class AndroidPrinter:
         item_element.text = plural.value
 
 
+
 def main():
     logging.basicConfig(format='%(message)s')
     log = logging.getLogger(__name__)
@@ -98,8 +102,9 @@ def main():
     # Sort elements
     tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
 
-    xml_str = etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='UTF-8', standalone=True)
-    decoded_str = xml_str.decode("utf-8")
+    xml_str = etree.tostring(tree, pretty_print=True, encoding='UTF-8', doctype='<?xml version="1.0" encoding="UTF-8", standalone="no"?>')
+    # TODO lxml does not propertly escape apostrophe and qoute
+    decoded_str = xml_str.decode("utf-8").replace("\'", "&apos;")
 
     if args.output_file is not None:
         with args.output_file as output_file:

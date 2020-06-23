@@ -9,4 +9,8 @@ noti_foos_count,one,Notification foo count,%d foo
 noti_foos_count,other,Notification foo count,%d foos
 secondary_fragment_button,,Action text of secondary fragment,Less Cool Button
 secondary_fragment_title,,Title of secondary fragment,Less Cool Fragment
-secondary_fragment_empty,,Title of secondary fragment,
+lessthan,,,<
+greaterthan,,,>
+qoute,,,"this is ""a "" qouutte"
+apostrophe,,,de'cuul
+ampersand,,,&
