@@ -36,22 +36,28 @@ A sample document in Google Sheets can be found [here](https://docs.google.com/s
 
 This will yeild the following output
 
+
 ```xml
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8", standalone="no"?>
 <resources>
-    <plurals name="main_fragment_bottom_summary">
-        <item quantity="zero">No bar dropped</item>
-        <item quantity="one">One bar dropped</item>
-        <item quantity="other">%d bars dropped</item>
-    </plurals>
-    <string name="main_fragment_button">Cool Button</string>
-    <string name="main_fragment_title">Cool Fragment</string>
-    <plurals name="noti_foos_count">
-        <item quantity="zero">%d foos</item>
-        <item quantity="one">%d foo</item>
-        <item quantity="other">%d foos</item>
-    </plurals>
-    <string name="secondary_fragment_button">Less Cool Button</string>
-    <string name="secondary_fragment_title">Less Cool Fragment</string>
+  <string name="ampersand">&amp;</string>
+  <string name="apostrophe">de&apos;cuul</string>
+  <string name="greaterthan">&gt;</string>
+  <string name="lessthan">&lt;</string>
+  <plurals name="main_fragment_bottom_summary">
+    <item quantity="zero">No bar dropped</item>
+    <item quantity="one">One bar dropped</item>
+    <item quantity="other">%d bars dropped</item>
+  </plurals>
+  <string name="main_fragment_button">Cool Button</string>
+  <string name="main_fragment_title">Cool Fragment</string>
+  <plurals name="noti_foos_count">
+    <item quantity="zero">%d foos</item>
+    <item quantity="one">%d foo</item>
+    <item quantity="other">%d foos</item>
+  </plurals>
+  <string name="qoute">this is "a " qouutte</string>
+  <string name="secondary_fragment_button">Less Cool Button</string>
+  <string name="secondary_fragment_title">Less Cool Fragment</string>
 </resources>
 ```
