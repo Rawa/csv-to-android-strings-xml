@@ -58,7 +58,6 @@ class AndroidPrinter:
 
     @staticmethod
     def add_plural(elem: etree.Element, plural: PluralElement):
-        print("Time to process plural " + str(plural))
         plural_element = elem.find('.//plurals[@name="' + plural.key + '"]')
         if plural_element is None:
             plural_element = etree.SubElement(elem, "plurals")
@@ -95,8 +94,6 @@ def main():
     tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
 
     xml_str = etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='UTF-8', standalone=True)
-
-    print(xml_str.decode("utf-8"))
 
     with args.output_file as output_file:
         output_file.write(xml_str.decode("utf-8"))
