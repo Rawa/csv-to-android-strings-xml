@@ -74,7 +74,6 @@ class AndroidPrinter:
     def escape(text):
         text = text.replace("\"", "\\\"")
         text = text.replace("'", "\\'")
-        print(text)
         return text
 
 
