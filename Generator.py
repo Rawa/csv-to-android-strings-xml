@@ -107,8 +107,7 @@ def main():
     # Sort elements
     tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
 
-    xml_str = etree.tostring(tree, pretty_print=True, encoding='UTF-8', doctype='<?xml version="1.0" encoding="UTF-8", standalone="no"?>')
-    print(xml_str)
+    xml_str = etree.tostring(tree, pretty_print=True, encoding='UTF-8', doctype='<?xml version="1.0" encoding="UTF-8" standalone="no"?>')
     decoded_str = xml_str.decode("utf-8")
 
     if args.output_file is not None:
