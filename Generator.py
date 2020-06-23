@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import logging
 from itertools import islice
 from lxml import etree
 
@@ -22,7 +23,7 @@ class Parser:
         parser.add_argument('-i', '--input', action="store", dest="input_file",
                             type=argparse.FileType('r', encoding='UTF-8'), help='CSV input file', required=True)
         parser.add_argument('-o', '--output', action="store", dest="output_file",
-                            type=argparse.FileType('w+', encoding='UTF-8'), help='CSV input file', required=True)
+                            type=argparse.FileType('w+', encoding='UTF-8'), help='CSV input file')
         parser.add_argument('-k', '--key-column', action="store", dest="key_column",
                             type=int, help='Column for keys', default=0)
         parser.add_argument('-v', '--value-column', action="store", dest="value_column",
@@ -69,6 +70,9 @@ class AndroidPrinter:
 
 
 def main():
+    logging.basicConfig(format='%(message)s')
+    log = logging.getLogger(__name__)
+
     parser = Parser().parser()
     args = parser.parse_args()
     elements = []
@@ -81,7 +85,7 @@ def main():
             if not key:
                 continue
             if not value:
-                print("WARNING: Key '" + key + "' has no value")
+                log.warning("Key '" + key + "' has no value")
                 # continue
 
             if plural is None:
@@ -91,12 +95,17 @@ def main():
 
     tree = AndroidPrinter.elements_to_etree(elements)
 
+    # Sort elements
     tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
 
     xml_str = etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='UTF-8', standalone=True)
+    decoded_str = xml_str.decode("utf-8")
 
-    with args.output_file as output_file:
-        output_file.write(xml_str.decode("utf-8"))
+    if args.output_file is not None:
+        with args.output_file as output_file:
+            output_file.write(decoded_str)
+    else:
+        print(decoded_str)
 
 
 if __name__ == '__main__':
