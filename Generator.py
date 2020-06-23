@@ -58,7 +58,7 @@ class AndroidPrinter:
     def add_string(elem: etree.Element, item: StringElement):
         string = etree.SubElement(elem, "string")
         string.set('name', item.key)
-        string.text = item.value
+        string.text = AndroidPrinter.escape(item.value)
 
     @staticmethod
     def add_plural(elem: etree.Element, plural: PluralElement):
@@ -69,8 +69,13 @@ class AndroidPrinter:
 
         item_element = etree.SubElement(plural_element, 'item')
         item_element.set('quantity', plural.plural.value)
-        item_element.text = plural.value
+        item_element.text = AndroidPrinter.escape(plural.value)
 
+    def escape(text):
+        text = text.replace("\"", "\\\"")
+        text = text.replace("'", "\\'")
+        print(text)
+        return text
 
 
 def main():
@@ -103,8 +108,8 @@ def main():
     tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
 
     xml_str = etree.tostring(tree, pretty_print=True, encoding='UTF-8', doctype='<?xml version="1.0" encoding="UTF-8", standalone="no"?>')
-    # TODO lxml does not propertly escape apostrophe and qoute
-    decoded_str = xml_str.decode("utf-8").replace("\'", "&apos;")
+    print(xml_str)
+    decoded_str = xml_str.decode("utf-8")
 
     if args.output_file is not None:
         with args.output_file as output_file:
