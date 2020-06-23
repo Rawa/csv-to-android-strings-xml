@@ -2,10 +2,8 @@
 
 import argparse
 import csv
-import xml.etree.cElementTree as ElemTree
-# noinspection PyUnresolvedReferences
-from xml.dom import minidom
 from itertools import islice
+from lxml import etree
 
 from generator.domain.PluralType import PluralType
 from generator.domain.StringElement import StringElement
@@ -42,8 +40,8 @@ class AndroidPrinter:
         pass
 
     @staticmethod
-    def elements_to_xml(elements):
-        resources = ElemTree.Element('resources')
+    def elements_to_etree(elements):
+        resources = etree.Element('resources')
         for item in elements:
             if type(item) is PluralElement:
                 AndroidPrinter.add_plural(resources, item)
@@ -53,20 +51,20 @@ class AndroidPrinter:
         return resources
 
     @staticmethod
-    def add_string(elem: ElemTree.Element, item: StringElement):
-        string = ElemTree.SubElement(elem, "string")
+    def add_string(elem: etree.Element, item: StringElement):
+        string = etree.SubElement(elem, "string")
         string.set('name', item.key)
         string.text = item.value
 
     @staticmethod
-    def add_plural(elem: ElemTree.Element, plural: PluralElement):
+    def add_plural(elem: etree.Element, plural: PluralElement):
         print("Time to process plural " + str(plural))
         plural_element = elem.find('.//plurals[@name="' + plural.key + '"]')
         if plural_element is None:
-            plural_element = ElemTree.SubElement(elem, "plurals")
+            plural_element = etree.SubElement(elem, "plurals")
             plural_element.set('name', plural.key)
 
-        item_element = ElemTree.SubElement(plural_element, 'item')
+        item_element = etree.SubElement(plural_element, 'item')
         item_element.set('quantity', plural.plural.value)
         item_element.text = plural.value
 
@@ -92,12 +90,16 @@ def main():
             else:
                 elements.append(PluralElement(key, value, PluralType(plural)))
 
-    resource_element = AndroidPrinter.elements_to_xml(elements)
+    tree = AndroidPrinter.elements_to_etree(elements)
 
-    xml_str = minidom.parseString(ElemTree.tostring(resource_element)).toprettyxml(indent="    ")
+    tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
+
+    xml_str = etree.tostring(tree, pretty_print=True, xml_declaration=True, encoding='UTF-8', standalone=True)
+
+    print(xml_str.decode("utf-8"))
+
     with args.output_file as output_file:
-        output_file.write(xml_str)
-    print(elements)
+        output_file.write(xml_str.decode("utf-8"))
 
 
 if __name__ == '__main__':
