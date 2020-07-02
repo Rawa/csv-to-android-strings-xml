@@ -25,7 +25,7 @@ class Parser:
 
         required = parser.add_argument_group('required arguments')
         required.add_argument('-i', '--input', action="store", dest="input_file",
-                            type=argparse.FileType('r', encoding='UTF-8'), help='CSV input file', required=True)
+                              type=argparse.FileType('r', encoding='UTF-8'), help='CSV input file', required=True)
 
         parser.add_argument('-o', '--output', action="store", dest="output_file",
                             type=argparse.FileType('w+', encoding='UTF-8'), help='CSV input file')
@@ -50,7 +50,7 @@ class AndroidPrinter:
         resources = etree.Element('resources')
         for item in elements:
             if not item.value:
-               continue
+                continue
             elif type(item) is PluralElement:
                 AndroidPrinter.add_plural(resources, item)
             else:
