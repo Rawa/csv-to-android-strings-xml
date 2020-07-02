@@ -7,6 +7,8 @@ from itertools import islice
 from lxml import etree
 import re
 
+import xml.dom.minidom
+
 from generator.domain.PluralType import PluralType
 from generator.domain.StringElement import StringElement
 from generator.domain.PluralElement import PluralElement
@@ -47,7 +49,9 @@ class AndroidPrinter:
     def elements_to_etree(elements):
         resources = etree.Element('resources')
         for item in elements:
-            if type(item) is PluralElement:
+            if not item.value:
+               continue
+            elif type(item) is PluralElement:
                 AndroidPrinter.add_plural(resources, item)
             else:
                 AndroidPrinter.add_string(resources, item)
@@ -59,16 +63,15 @@ class AndroidPrinter:
         string = etree.SubElement(elem, "string")
         string.set('name', item.key)
         string.text = AndroidPrinter.escape(item.value)
-        if item.value:
-            string.text = AndroidPrinter.escape(item.value)
-        else:
-            string.text = " "
 
     @staticmethod
     def add_plural(elem: etree.Element, plural: PluralElement):
         if not plural.value:
             return
+
         plural_element = elem.find('.//plurals[@name="' + plural.key + '"]')
+
+        # If plural wrapper doesn't exist, create it.
         if plural_element is None:
             plural_element = etree.SubElement(elem, "plurals")
             plural_element.set('name', plural.key)
@@ -112,8 +115,13 @@ def main():
     # Sort elements
     tree[:] = sorted(tree, key=lambda elem: elem.get('name'))
 
-    xml_str = etree.tostring(tree, pretty_print=True, encoding='UTF-8', doctype='<?xml version="1.0" encoding="UTF-8" standalone="no"?>')
+    xml_str = etree.tostring(tree, encoding='UTF-8')
+
+    # Work around for pretty printing
     decoded_str = xml_str.decode("utf-8")
+    dom = xml.dom.minidom.parseString(decoded_str)
+    pretty_xml_as_string = dom.toprettyxml(indent="    ", encoding='UTF-8')
+    decoded_str = pretty_xml_as_string.decode("utf-8")
 
     if args.output_file is not None:
         with args.output_file as output_file:
