@@ -59,9 +59,15 @@ class AndroidPrinter:
         string = etree.SubElement(elem, "string")
         string.set('name', item.key)
         string.text = AndroidPrinter.escape(item.value)
+        if item.value:
+            string.text = AndroidPrinter.escape(item.value)
+        else:
+            string.text = " "
 
     @staticmethod
     def add_plural(elem: etree.Element, plural: PluralElement):
+        if not plural.value:
+            return
         plural_element = elem.find('.//plurals[@name="' + plural.key + '"]')
         if plural_element is None:
             plural_element = etree.SubElement(elem, "plurals")
