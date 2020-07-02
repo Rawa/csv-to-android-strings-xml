@@ -80,10 +80,9 @@ class AndroidPrinter:
         item_element.set('quantity', plural.plural.value)
         item_element.text = AndroidPrinter.escape(plural.value)
 
+    @staticmethod
     def escape(text):
-        text = text.replace("\"", "\\\"")
-        text = text.replace("'", "\\'")
-        return text
+        return text.replace("\"", "\\\"").replace("'", "\\'")
 
 
 def main():
@@ -101,13 +100,11 @@ def main():
             plural = row[args.plural_column] or None
             if not key:
                 continue
-            if not value:
-                log.warning("Key '" + key + "' has no value")
-                # continue
 
             if plural is None:
                 elements.append(StringElement(key, value))
             else:
+                log.warning("Key '" + key + "' has no value")
                 elements.append(PluralElement(key, value, PluralType(plural)))
 
     tree = AndroidPrinter.elements_to_etree(elements)
